@@ -15,7 +15,7 @@ class Game(object):
         self.Load(1)
         self.surface = surface
         self.game_over = False
-        self.restart_button = pygame.Rect(0, 0, 150, 50)  
+        self.restart_button = pygame.Rect(300, 75, 150, 50)  
 
     def Load(self, lv):
         self.level = Level(lv)
