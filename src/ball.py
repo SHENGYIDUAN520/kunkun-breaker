@@ -10,7 +10,7 @@ class Ball(pygame.sprite.Sprite):
         self.posY = y
         self.dirX = dirX
         self.dirY = dirY
-        self.speed = 0.3
+        self.speed = 5
         img = pygame.image.load(imgPath)
         img = pygame.transform.scale(img, (SPRITE_SIZE_W, SPRITE_SIZE_H))
         self.image = img

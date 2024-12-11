@@ -24,10 +24,10 @@ class Player(pygame.sprite.Sprite):
         pressed = pygame.key.get_pressed()
         if pressed[K_LEFT]:
             if self.posX > self.posXMin:
-                self.posX -= 0.5
+                self.posX -= 7
         if pressed[K_RIGHT]:
             if self.posX < self.posXMax:
-                self.posX += 0.5
+                self.posX += 7
         
         if getCurrentTime() - self.preChangeTime > 200:
             self.preChangeTime = getCurrentTime()
