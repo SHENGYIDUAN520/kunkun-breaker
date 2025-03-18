@@ -11,7 +11,7 @@ game = Game(DISPLAYSURF)
 clock = pygame.time.Clock()
 
 while True:
-    if pyga2me.event.get(QUIT):
+    if pygame.event.get(QUIT):
         pygame.quit()
         sys.exit()
     
