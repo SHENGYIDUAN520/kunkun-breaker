@@ -18,6 +18,8 @@ class Ball(pygame.sprite.Sprite):
         self.preRotateTime = getCurrentTime()
         self.jntmSound = pygame.mixer.Sound(SoundRes.JNTM)
         self.ngmSound = pygame.mixer.Sound(SoundRes.NGM)
+        self.lastSoundTime = 0  # 上次播放音效的时间
+        self.soundCooldown = 150  # 音效冷却时间（毫秒）
     
     def SetSpeed(self, speed):
         self.speed = speed
@@ -39,14 +41,24 @@ class Ball(pygame.sprite.Sprite):
         surface.blit(self.image, self.rect)
 
     def changeDirection(self, rect):
-        self.jntmSound.play()
+        # 添加音效冷却检查
+        currentTime = getCurrentTime()
+        if currentTime - self.lastSoundTime > self.soundCooldown:
+            self.jntmSound.play()
+            self.lastSoundTime = currentTime
+            
         if abs(self.GetRect().x - rect.x) <= abs(self.GetRect().y - rect.y):
             self.dirY *= -1
         else:
             self.dirX *= -1
 
     def changeYDirection(self, rect):
-        self.ngmSound.play()
+        # 添加音效冷却检查
+        currentTime = getCurrentTime()
+        if currentTime - self.lastSoundTime > self.soundCooldown:
+            self.ngmSound.play()
+            self.lastSoundTime = currentTime
+            
         if abs(self.GetRect().x - rect.x) <= abs(self.GetRect().y - rect.y):
             self.dirY *= -1
         else:

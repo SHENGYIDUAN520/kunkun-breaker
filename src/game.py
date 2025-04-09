@@ -11,6 +11,7 @@ import cv2
 import numpy as np
 from PIL import Image  # 用于获取GIF信息
 import time
+import sys
 
 
 class Game(object):
@@ -150,13 +151,14 @@ class Game(object):
                                        self.home_button.centery - text.get_height()//2))
 
     def draw_start_screen(self):
-        # 绘制视频背景
-        if self.state == "START":
-            self.update_video_background()
-        
-        # 如果没有视频背景，绘制纯色背景
-        if not self.success_reading:
-            self.surface.fill((0, 0, 0))
+        # 背景已在 update 方法中处理
+        # # 绘制视频背景
+        # if self.state == "START":
+        #     self.update_video_background()
+        # 
+        # # 如果没有视频背景，绘制纯色背景
+        # if not self.success_reading:
+        #     self.surface.fill((0, 0, 0))
         
         # 绘制半透明黑色遮罩使按钮更容易看见
         s = pygame.Surface(GAME_SIZE)
@@ -206,8 +208,22 @@ class Game(object):
         [ball.draw(self.surface) for ball in self.balls]
 
     def update(self):
-        # 处理鼠标点击事件
-        for event in pygame.event.get((MOUSEBUTTONDOWN,)):  # 只获取鼠标点击事件
+        # 背景处理：只在 START 状态下显示动态背景
+        if self.state == "START" and self.success_reading:
+            self.update_video_background() # 更新并绘制GIF背景
+        elif self.state == "PLAYING":
+             self.surface.fill((255, 255, 255)) # 游戏界面使用白色背景
+        else: # LEVEL_SELECT 或其他状态
+             self.surface.fill((0, 0, 0)) # 其他界面使用黑色背景
+
+        # 重要修改：不清空所有事件队列，只处理关心的事件类型
+        # 退出事件处理
+        for event in pygame.event.get(QUIT):
+            pygame.quit()
+            sys.exit()
+        
+        # 鼠标点击事件处理
+        for event in pygame.event.get(MOUSEBUTTONDOWN):
             if event.type == MOUSEBUTTONDOWN:
                 mouse_pos = event.pos
                 if self.state == "START":
@@ -218,7 +234,7 @@ class Game(object):
                         self.state = "LEVEL_SELECT"
                     elif self.exit_button.collidepoint(mouse_pos):
                         pygame.quit()
-                        exit()
+                        sys.exit()
                 
                 elif self.state == "LEVEL_SELECT":
                     if self.home_button.collidepoint(mouse_pos):
@@ -239,13 +255,26 @@ class Game(object):
                     elif self.home_button.collidepoint(mouse_pos):
                         self.state = "START"
 
-        # 游戏逻辑更新
+        # 游戏逻辑更新 (只在 PLAYING 状态下)
         if self.state == "PLAYING" and not self.isGameOver:
-            self.player.update()  # Player类内部会自己检查按键状态
+            # 先处理键盘事件
+            for event in pygame.event.get():
+                if event.type == QUIT:
+                    pygame.quit()
+                    sys.exit()
+            
+            # 调用player的update方法更新位置
+            self.player.update()
             [ball.update() for ball in self.balls]
             self.checkCollide()
             if self.isGameWin():
-                self.Load(self.level.level + 1)
+                # 检查是否有下一关
+                next_level_path = f'data/level/{self.level.level + 1}.x'
+                if os.path.exists(next_level_path):
+                    self.Load(self.level.level + 1)
+                else:
+                    print(f"通关！最后一关是 {self.level.level}")
+                    self.state = "START" # 或者显示通关画面
 
 
     def checkBallBlockCollide(self):
