@@ -53,8 +53,9 @@ class Game(object):
             
             # 保存原始尺寸用于缩放
             original_size = pil_image.size
-            scale = min(GAME_SIZE[0]/original_size[0], GAME_SIZE[1]/original_size[1])
-            target_size = (int(original_size[0]*scale), int(original_size[1]*scale))
+            # scale = min(GAME_SIZE[0]/original_size[0], GAME_SIZE[1]/original_size[1]) # 注释掉保持宽高比的缩放
+            # target_size = (int(original_size[0]*scale), int(original_size[1]*scale)) # 注释掉保持宽高比的缩放
+            target_size = GAME_SIZE # 直接将目标尺寸设置为游戏窗口大小
             
             while True:
                 try:
