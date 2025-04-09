@@ -81,8 +81,7 @@ class Game(object):
             self.current_frame = 0
             self.last_frame_time = time.time() * 1000
             self.success_reading = True
-            print(f"成功加载GIF背景，共{len(self.bg_frames)}帧")
-            print(f"帧持续时间: {self.frame_times}")
+            
             
         except Exception as e:
             print(f"背景GIF加载错误: {str(e)}")
